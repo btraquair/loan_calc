@@ -2,6 +2,16 @@
 //
 #include "loan.hpp"
 
+Loan::Loan(double init_balance, double init_interest)
+{
+    balance = init_balance;
+    interest_rate = init_interest;
+    if(balance > 0)
+    {
+        paid_in_full = false;
+    }
+}
+
 double Loan::get_balance(void)
 {
     return balance;
@@ -38,19 +48,23 @@ double Loan::make_payment(double payment_amount)
     return 0;
 }
 
-void Loan::compound_interest(rate_type rate_time)
+void Loan::compound_interest(rate_type rate_time)  // Compoundinterest and add to total balance. Time scales vary interest rate.
 {
     double temp_int_rate;
     switch(rate_time)
     {
         case annual:
             temp_int_rate = interest_rate;
+            break;
         case monthly: 
             temp_int_rate = interest_rate/12;
+            break;
         case weekly:
             temp_int_rate = interest_rate/52;
+            break;
         case daily:
             temp_int_rate = interest_rate/365;
+            break;
     }
     balance = balance*temp_int_rate + balance;
 }
