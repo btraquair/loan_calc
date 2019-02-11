@@ -1,5 +1,15 @@
-test0 : main.o
-	g++ -L/usr/include/boost main.o -o test0
+CC = g++
+CFLAGS = -O
+
+test0 : main.o loan/loan.o
+	$(CC) $(CFLAGS) -o test0 main.o loan/loan.o 
 
 main.o : main.cpp
-	g++ -I /usr/include/boost main.cpp -o main.o
+	$(CC) $(CFLAGS) -c main.cpp 
+
+loan.o : loan/loan.cpp
+	$(CC) $(CFLAGS) -c loan/loan.cpp
+
+clean:
+	rm -f core main.o
+	rm -f core loan/loan.o
