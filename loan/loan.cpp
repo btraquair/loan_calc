@@ -1,6 +1,9 @@
 // Benjamain Traquair
 //
+
+#include <iostream>
 #include "loan.hpp"
+
 
 Loan::Loan(double init_balance, double init_interest)
 {
@@ -12,12 +15,12 @@ Loan::Loan(double init_balance, double init_interest)
     }
 }
 
-double Loan::get_balance(void)
+double Loan::get_balance(void) const
 {
     return balance;
 }
 
-double Loan::get_interest(rate_type rate_time)
+double Loan::get_interest(rate_type rate_time) const
 {
     switch(rate_time)
     {
@@ -32,23 +35,31 @@ double Loan::get_interest(rate_type rate_time)
     }
 }
 
+bool Loan::get_paid_state() const
+{
+    return paid_in_full;
+}
+
 double Loan::make_payment(double payment_amount)
 {
-    balance = balance - payment_amount;
-    if(balance >= 0)
+    if(balance > 0)
     {
-        paid_in_full = true;
-        if(balance < 0)
+        balance = balance - payment_amount;
+        if(balance <= 0)
         {
-            return balance*(-1);  // return "change" in case of overpayment and set balance to zero
-            balance = 0;
+            paid_in_full = true;
+            if(balance < 0)
+            {
+                //return balance*(-1);  // return "change" in case of overpayment and set balance to zero
+                balance = 0;
+            }
+
         }
-        return 0;
     }
     return 0;
 }
 
-void Loan::compound_interest(rate_type rate_time)  // Compoundinterest and add to total balance. Time scales vary interest rate.
+void Loan::compound_interest(rate_type rate_time)  // Compound interest and add to total balance. Time scales vary interest rate.
 {
     double temp_int_rate;
     switch(rate_time)
@@ -66,5 +77,22 @@ void Loan::compound_interest(rate_type rate_time)  // Compoundinterest and add t
             temp_int_rate = interest_rate/365;
             break;
     }
-    balance = balance*temp_int_rate + balance;
+    if(balance > 0)
+    {
+        balance = balance*temp_int_rate + balance;
+    }
+}
+
+bool all_paid_off(const std::vector<Loan>& loan_vec)
+{
+    bool paid_in_full_all = (loan_vec.at(0)).get_paid_state();
+    if( loan_vec.size() > 1)
+    {
+        for(int i = 1; i < loan_vec.size(); i++)
+        {
+            paid_in_full_all = paid_in_full_all && loan_vec.at(i).get_paid_state();
+        }
+    }
+    return paid_in_full_all;
+
 }
