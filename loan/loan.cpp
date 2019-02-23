@@ -21,7 +21,7 @@ double Loan::get_balance(void) const
 }
 
 double Loan::get_interest(rate_type rate_time) const
-{
+{ // 
     switch(rate_time)
     {
         case annual:
@@ -81,6 +81,16 @@ void Loan::compound_interest(rate_type rate_time)  // Compound interest and add 
     {
         balance = balance*temp_int_rate + balance;
     }
+}
+
+double calc_min_payment(const Loan& my_loan )
+{
+    double min_payment = 0.0;
+    min_payment = 0.1*my_loan.get_balance();
+    min_payment += my_loan.get_balance()*my_loan.get_interest(Loan::monthly);
+
+    return min_payment;
+
 }
 
 bool all_paid_off(const std::vector<Loan>& loan_vec)
